@@ -19,6 +19,8 @@ export class CorteCajaComponent implements OnInit {
   cargando = true;
 // NUEVO: Variable para guardar la fecha en formato YYYY-MM-DD (Inicia con hoy)
   fechaSeleccionada: string = new Date().toISOString().split('T')[0];
+// NUEVO: Variable para el turno. Inicia en 'dia' (puedes programarlo para que detecte la hora local después si gustas)
+  turnoSeleccionado: string = 'dia';
 
   ngOnInit() {
     this.cargarCorte();
@@ -27,8 +29,8 @@ export class CorteCajaComponent implements OnInit {
   cargarCorte() {
     this.cargando = true; // Mostramos el mensaje de "Calculando..." mientras busca
 
-    // Le pasamos la fecha elegida al servicio
-    this.registroService.obtenerCorte(this.fechaSeleccionada).subscribe({
+    // Ahora pasamos la fecha y el turno
+    this.registroService.obtenerCorte(this.fechaSeleccionada, this.turnoSeleccionado).subscribe({
       next: (res) => {
         this.datosCorte = res;
         this.cargando = false;
@@ -47,6 +49,12 @@ export class CorteCajaComponent implements OnInit {
   cambiarFecha(event: any) {
     this.fechaSeleccionada = event.target.value;
     this.cargarCorte(); // Volvemos a pedir los datos a la base de datos
+  }
+
+  // NUEVO: Función para cambiar el turno
+  cambiarTurno(event: any) {
+    this.turnoSeleccionado = event.target.value;
+    this.cargarCorte();
   }
 
   cerrarModal() {

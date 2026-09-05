@@ -38,8 +38,8 @@
             </label>
             <div class="grid grid-cols-1 gap-3">
 
-              <!-- OPCIÓN 2 HORAS (Oculta si es Jacuzzi) -->
-              @if (habitacion.tipo !== 'jacuzzi') {
+              <!-- OPCIÓN 2 HORAS (Solo visible para Sencilla/Cochera) -->
+              @if (habitacion?.tipo !== 'jacuzzi') {
                 <label
                   class="flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all hover:bg-slate-50"
                   [class.border-blue-500]="datosFormulario.tipoTiempo === '2horas'"
@@ -54,12 +54,12 @@
                   />
                   <div>
                     <span class="block font-bold text-slate-800">⏱️ 2 Horas</span>
-                    <span class="text-xs text-slate-500 font-semibold text-green-700">Precio: $200.00</span>
+                    <span class="text-xs font-bold text-green-700">Precio: $200.00</span>
                   </div>
                 </label>
               }
 
-              <!-- OPCIÓN 4 HORAS -->
+              <!-- OPCIÓN 4 HORAS (Dinámica) -->
               <label
                 class="flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all hover:bg-slate-50"
                 [class.border-blue-500]="datosFormulario.tipoTiempo === '4horas'"
@@ -74,11 +74,13 @@
                 />
                 <div>
                   <span class="block font-bold text-slate-800">⏱️ 4 Horas</span>
-                  <span class="text-xs text-slate-500">Normal: $300.00 | Jacuzzi: $400.00</span>
+                  <span class="text-xs font-bold text-green-700">
+                    Precio: {{ habitacion?.tipo === 'jacuzzi' ? '$450.00' : '$300.00' }}
+                  </span>
                 </div>
               </label>
 
-              <!-- OPCIÓN NOCHE -->
+              <!-- OPCIÓN NOCHE (Dinámica) -->
               <label
                 class="flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all hover:bg-slate-50"
                 [class.border-blue-500]="datosFormulario.tipoTiempo === 'noche'"
@@ -93,7 +95,9 @@
                 />
                 <div>
                   <span class="block font-bold text-slate-800">🌙 Noche Completa (12 hrs)</span>
-                  <span class="text-xs text-slate-500">Precio general nocturno: $500.00</span>
+                  <span class="text-xs font-bold text-green-700">
+                    Precio: {{ habitacion?.tipo === 'jacuzzi' ? '$650.00' : '$400.00' }}
+                  </span>
                 </div>
               </label>
             </div>

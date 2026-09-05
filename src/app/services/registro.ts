@@ -21,7 +21,13 @@ export class RegistroService {
   }
 
   // Obtener el corte de caja por fecha (recibe 'YYYY-MM-DD')
-  obtenerCorte(fecha: string) {
-    return this.http.get<any>(`${this.apiUrl}/corte?fecha=${fecha}`);
+  // Obtener el corte de caja por fecha y turno
+  obtenerCorte(fecha: string, turno: string) {
+    return this.http.get<any>(`${this.apiUrl}/corte?fecha=${fecha}&turno=${turno}`);
+  }
+
+  // Obtener estadísticas globales
+  obtenerEstadisticas() {
+    return this.http.get<any>(`${this.apiUrl}/estadisticas`);
   }
 }

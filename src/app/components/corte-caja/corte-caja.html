@@ -17,6 +17,14 @@
           (change)="cambiarFecha($event)"
           class="border-2 border-slate-300 text-slate-700 font-bold rounded-lg px-4 py-2 focus:outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200 transition-all cursor-pointer shadow-sm"
         >
+        <select 
+          [value]="turnoSeleccionado" 
+          (change)="cambiarTurno($event)"
+          class="border-2 border-slate-300 text-slate-700 font-bold rounded-lg px-4 py-2 focus:outline-none focus:border-slate-800 transition-all cursor-pointer shadow-sm bg-white"
+        >
+          <option value="dia">☀️ Turno Día (8:00 AM - 8:00 PM)</option>
+          <option value="noche">🌙 Turno Noche (8:00 PM - 8:00 AM)</option>
+        </select>
       </div>
       <button (click)="cerrarModal()" class="text-slate-400 hover:text-red-500 text-3xl font-bold transition-colors">
         &times;

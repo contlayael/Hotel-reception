@@ -6,17 +6,19 @@ import { ModalGestion } from '../modal-gestion/modal-gestion';
 import { CorteCajaComponent } from '../corte-caja/corta-caja';
 // NUEVO: Importamos las herramientas reactivas para el reloj
 import { interval, Subscription } from 'rxjs';
+import { EstadisticasComponent } from '../estadisticas/estadiiticas';
 
 @Component({
   selector: 'app-mapa',
   standalone: true,
-  imports: [ModalCheckinComponent, ModalGestion, CorteCajaComponent],
+  imports: [ModalCheckinComponent, ModalGestion, CorteCajaComponent, EstadisticasComponent],
   templateUrl: './mapa.html',
   styleUrl: './mapa.css'
 })
 export class MapaComponent implements OnInit {
   habitaciones: any[] = [];
   mostrarCorte = false;
+  mostrarEstadisticas = false;
   
   // 1. Mantenemos tu Signal original
   habitacionSeleccionada = signal<any>(null);
