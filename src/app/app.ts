@@ -1,12 +1,16 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { MapaComponent } from './components/mapa/mapa';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  // Importamos nuestro nuevo componente aquí para que el HTML lo conozca
+  imports: [MapaComponent], 
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('frontend');
+  // Queda completamente limpio de lógica, listo para el futuro enrutamiento
+  
 }

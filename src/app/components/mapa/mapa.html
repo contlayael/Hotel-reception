@@ -1,0 +1,87 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+  <div class="mb-6 flex justify-end">
+  <button 
+    (click)="mostrarCorte = true"
+    class="bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 px-6 rounded-lg shadow-sm transition-colors flex items-center gap-2">
+    <span>📊</span> Ver Corte de Caja
+  </button>
+</div>
+  @for (hab of habitaciones; track hab.numero) {
+    <div
+      (click)="manejarClickHabitacion(hab)"
+      class="cursor-pointer relative p-6 rounded-xl shadow-md border-l-8 flex flex-col justify-between h-44 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+      [class.bg-white]="hab.estado === 'disponible'"
+      [class.border-green-500]="hab.estado === 'disponible'"
+      [class.bg-red-50]="hab.estado === 'ocupada'"
+      [class.border-red-500]="hab.estado === 'ocupada'"
+      [class.bg-yellow-50]="hab.estado === 'limpieza'"
+      [class.border-yellow-400]="hab.estado === 'limpieza'"
+      [class.bg-slate-200]="hab.estado === 'mantenimiento'"
+      [class.border-slate-400]="hab.estado === 'mantenimiento'"
+    >
+      <div class="flex justify-between items-start">
+        <span class="text-5xl font-black text-slate-800 tracking-tighter">{{ hab.numero }}</span>
+        <span
+          class="px-3 py-1 text-xs font-bold uppercase rounded-full shadow-sm"
+          [class.bg-green-100]="hab.estado === 'disponible'"
+          [class.text-green-800]="hab.estado === 'disponible'"
+          [class.bg-red-100]="hab.estado === 'ocupada'"
+          [class.text-red-800]="hab.estado === 'ocupada'"
+          [class.bg-yellow-100]="hab.estado === 'limpieza'"
+          [class.text-yellow-800]="hab.estado === 'limpieza'"
+          [class.bg-slate-300]="hab.estado === 'mantenimiento'"
+          [class.text-slate-800]="hab.estado === 'mantenimiento'"
+        >
+          {{ hab.estado }}
+        </span>
+      </div>
+
+      <div>
+        <div class="text-sm font-semibold text-slate-600 flex items-center gap-2 mb-1">
+          <span class="bg-slate-200 p-1 rounded">🛏️</span> {{ hab.tipo }}
+        </div>
+        @if (hab.tiempoRestante) {
+          <div class="text-2xl font-black tracking-widest mt-2 rounded-lg transition-all duration-300 inline-block"
+               [class.text-red-600]="!hab.porTerminar && !hab.tiempoAgotado"
+               [class.bg-red-600]="hab.porTerminar || hab.tiempoAgotado"
+               [class.text-white]="hab.porTerminar || hab.tiempoAgotado"
+               [class.animate-pulse]="hab.porTerminar && !hab.tiempoAgotado"
+               [class.px-3]="hab.porTerminar || hab.tiempoAgotado"
+               [class.py-1]="hab.porTerminar || hab.tiempoAgotado">
+            ⏱️ {{ hab.tiempoRestante }}
+          </div>
+          
+          <!-- Alerta de tiempo agotado -->
+          @if (hab.tiempoAgotado) {
+            <div class="text-xs font-bold text-red-700 uppercase mt-2 animate-bounce">
+              ¡TIEMPO AGOTADO!
+            </div>
+          }
+        } @else {
+          <div class="text-xl font-bold text-slate-400 mt-2 opacity-50">-- : -- : --</div>
+        }
+      </div>
+    </div>
+  }
+</div>
+
+<!-- MODAL DE CHECK-IN -->
+<app-modal-checkin
+  [habitacion]="habitacionSeleccionada()"
+  (alCerrar)="habitacionSeleccionada.set(null)"
+  (alGuardarExitoso)="cargarHabitacionesDesdeBackend()"
+>
+</app-modal-checkin>
+
+<!-- MODAL DE GESTIÓN (Usando la sintaxis moderna @if) -->
+@if (mostrarModalGestion) {
+  <app-modal-gestion 
+    [habitacion]="habitacionSeleccionada()" 
+    (cerrar)="cerrarModalGestion()" 
+    (recargar)="manejarRecarga()">
+  </app-modal-gestion>
+}
+<!-- MODAL CORTE DE CAJA (Usando la sintaxis moderna @if) -->
+@if (mostrarCorte) {
+  <app-corte-caja (cerrar)="mostrarCorte = false"></app-corte-caja>
+}
