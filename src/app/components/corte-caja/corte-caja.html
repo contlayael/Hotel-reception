@@ -72,6 +72,7 @@
               <tr>
                 <th class="px-4 py-3">Habitación</th>
                 <th class="px-4 py-3">Hora Entrada</th>
+                <th class="px-4 py-3">Hora Salida</th>
                 <th class="px-4 py-3">Tipo de Renta</th>
                 <th class="px-4 py-3">Estado</th>
                 <th class="px-4 py-3">Método de Pago</th>
@@ -83,6 +84,13 @@
                 <tr class="hover:bg-slate-50 transition-colors">
                   <td class="px-4 py-3 font-bold text-slate-800 text-lg">{{ reg.habitacion?.numero || 'N/A' }}</td>
                   <td class="px-4 py-3">{{ reg.horaEntrada | date:'shortTime' }}</td>
+                  <td class="px-4 py-3 font-semibold text-slate-600">
+                    @if (reg.horaSalidaReal) {
+                      {{ reg.horaSalidaReal | date:'shortTime' }}
+                    } @else {
+                      <span class="text-slate-400 opacity-50">En curso</span>
+                    }
+                  </td>
                   <td class="px-4 py-3 uppercase text-xs font-semibold">{{ reg.tipoTiempo }}</td>
                   <td class="px-4 py-3">
                     <span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase"

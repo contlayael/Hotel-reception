@@ -22,10 +22,19 @@ export class Habitacion {
   }
 
   // Cambiar rápidamente el estado de una habitación
-  actualizarEstado(id: string, nuevoEstado: string) {
-    // Ajusta la URL base si la tienes definida diferente en tu servicio
-    return this.http.patch(`${this.apiUrl}/${id}/estado`, { 
-      estado: nuevoEstado 
-    });
+  // Agregamos la nota como parámetro opcional
+  // Fíjate que reciba la notaMantenimiento y la meta dentro de las llaves { } al final
+  actualizarEstado(id: string, estado: string, notaMantenimiento: string = '') {
+    return this.http.put(`${this.apiUrl}/${id}/estado`, { estado, notaMantenimiento });
+  }
+
+  // Crear nueva habitación
+  crearHabitacion(datos: { numero: string, tipo: string }) {
+    return this.http.post(this.apiUrl, datos);
+  }
+
+  // Eliminar habitación
+  eliminarHabitacion(id: string) {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

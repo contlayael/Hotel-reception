@@ -20,6 +20,9 @@ export class ModalCheckinComponent implements OnChanges {
   pasoActual = signal<number>(1);
   estaGuardando = signal<boolean>(false);
 
+  modoMantenimiento = false;
+  notaMantenimiento = '';
+
   datosFormulario = {
     tipoTiempo: '2horas',
     tipoLlegada: 'auto',
@@ -35,6 +38,9 @@ export class ModalCheckinComponent implements OnChanges {
   // ==========================================
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['habitacion'] && this.habitacion) {
+      this.modoMantenimiento = false;
+      this.notaMantenimiento = '';
+      this.pasoActual.set(1);
       // Si la habitación es jacuzzi, por defecto ponemos 4 horas para evitar errores
       if (this.habitacion.tipo === 'jacuzzi') {
         this.datosFormulario.tipoTiempo = '4horas';
@@ -42,6 +48,27 @@ export class ModalCheckinComponent implements OnChanges {
         this.datosFormulario.tipoTiempo = '2horas';
       }
     }
+  }
+
+  // NUEVO: Función para guardar el mantenimiento sin tocar los registros de dinero
+  guardarMantenimiento(): void {
+    if (!this.notaMantenimiento.trim() || this.estaGuardando()) return;
+    
+    this.estaGuardando.set(true);
+    
+    // Mandamos llamar a la función que ya habíamos preparado en el servicio
+    this.habitacionService.actualizarEstado(this.habitacion._id, 'mantenimiento', this.notaMantenimiento).subscribe({
+      next: () => {
+        this.estaGuardando.set(false);
+        this.alGuardarExitoso.emit(); // Refresca el mapa
+        this.cerrarModal(); 
+      },
+      error: (err) => {
+        console.error('Error al guardar mantenimiento:', err);
+        alert('Error al bloquear la habitación.');
+        this.estaGuardando.set(false);
+      }
+    });
   }
 
   // ==========================================

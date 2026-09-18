@@ -18,12 +18,22 @@ export class CorteCajaComponent implements OnInit {
   datosCorte: any = null;
   cargando = true;
 // NUEVO: Variable para guardar la fecha en formato YYYY-MM-DD (Inicia con hoy)
-  fechaSeleccionada: string = new Date().toISOString().split('T')[0];
+  fechaSeleccionada: string = '';
 // NUEVO: Variable para el turno. Inicia en 'dia' (puedes programarlo para que detecte la hora local después si gustas)
   turnoSeleccionado: string = 'dia';
 
   ngOnInit() {
+    this.fechaSeleccionada = this.obtenerFechaLocal();
     this.cargarCorte();
+  }
+
+  //Agrega esta nueva función que extrae el día, mes y año de tu zona horaria
+  obtenerFechaLocal(): string {
+    const hoy = new Date();
+    const yyyy = hoy.getFullYear();
+    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dd = String(hoy.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
   }
 
   cargarCorte() {

@@ -7,18 +7,44 @@ import { CorteCajaComponent } from '../corte-caja/corta-caja';
 // NUEVO: Importamos las herramientas reactivas para el reloj
 import { interval, Subscription } from 'rxjs';
 import { EstadisticasComponent } from '../estadisticas/estadiiticas';
+import { GestionHabitacionesComponent } from '../gestion-habitaciones/gestion-habitaciones';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-mapa',
   standalone: true,
-  imports: [ModalCheckinComponent, ModalGestion, CorteCajaComponent, EstadisticasComponent],
+  imports: [ModalCheckinComponent, ModalGestion, CorteCajaComponent, EstadisticasComponent, GestionHabitacionesComponent],
   templateUrl: './mapa.html',
   styleUrl: './mapa.css'
 })
 export class MapaComponent implements OnInit {
+  private authService = inject(AuthService);
   habitaciones: any[] = [];
   mostrarCorte = false;
   mostrarEstadisticas = false;
+  menuAbierto = false;
+  mostrarAdminHabitaciones = false;
+
+  abrirAdminHabitaciones(event: Event) {
+    event.stopPropagation();
+    this.menuAbierto = false;
+    this.mostrarAdminHabitaciones = true;
+    this.cdr.detectChanges();
+  }
+
+  abrirCorte(event: Event) {
+    event.stopPropagation();
+    this.mostrarCorte = true;
+    this.menuAbierto = false; // Cerramos el menú al abrir el modal
+    this.cdr.detectChanges(); // Obligamos a pintar el cambio
+  }
+
+  abrirEstadisticas(event: Event) {
+    event.stopPropagation();
+    this.mostrarEstadisticas = true;
+    this.menuAbierto = false; // Cerramos el menú al abrir el modal
+    this.cdr.detectChanges();
+  }
   
   // 1. Mantenemos tu Signal original
   habitacionSeleccionada = signal<any>(null);
@@ -47,9 +73,12 @@ export class MapaComponent implements OnInit {
   cargarHabitacionesDesdeBackend(): void {
     this.habitacionService.obtenerHabitaciones().subscribe({
       next: (datosQueLlegan: any[]) => {
-        // 👇 NUEVO: Imprimimos los datos en la consola para ver qué traen
-        console.log('Habitaciones desde el backend:', datosQueLlegan);
-        this.habitaciones = datosQueLlegan;
+        // Ordenamos las habitaciones numéricamente
+        this.habitaciones = datosQueLlegan.sort((a: any, b: any) => Number(a.numero) - Number(b.numero));
+        
+        // (Borramos la línea this.habitaciones = datosQueLlegan; que tenías aquí para no destruir el orden)
+        
+        console.log('Habitaciones ordenadas y limpias:', this.habitaciones);
         this.cdr.markForCheck(); 
       },
       error: (error: any) => {
@@ -74,8 +103,11 @@ export class MapaComponent implements OnInit {
 
     } else if (hab.estado === 'mantenimiento') {
       
-      // Confirmación de mantenimiento terminado
-      if (confirm(`¿El mantenimiento de la habitación ${hab.numero} ha finalizado?`)) {
+      // Armamos el mensaje mostrando la nota guardada en la base de datos
+      const nota = hab.notaMantenimiento ? hab.notaMantenimiento : 'Sin detalles especificados.';
+      
+      // Confirmación de mantenimiento terminado mostrando el problema
+      if (confirm(`🛠️ REPORTE DE MANTENIMIENTO:\n${nota}\n\n¿El mantenimiento de la habitación ${hab.numero} ha finalizado y está lista para usarse?`)) {
         this.cambiarEstadoHabitacion(hab._id, 'disponible');
       }
       
@@ -150,4 +182,9 @@ export class MapaComponent implements OnInit {
       }
     });
   }
+  cerrarSesion() {
+  if(confirm('¿Estás seguro de cerrar sesión?')) {
+    this.authService.logout();
+  }
+}
 }

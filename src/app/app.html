@@ -1,10 +1,10 @@
-<div class="min-h-screen bg-slate-100 p-8 font-sans">
-  <header
-    class="mb-8 flex justify-between items-center bg-white p-6 rounded-xl shadow-sm border border-slate-200"
-  >
-    <h1 class="text-3xl font-extrabold text-slate-800">🏨 Recepción Motel Martinny</h1>
-    <div class="text-sm text-slate-500 font-medium">Turno Actual: Recepción</div>
-  </header>
-
-  <app-mapa></app-mapa>
-</div>
+<!-- Si hay sesión activa en el servicio, mostramos el sistema -->
+@if (authService.sesionActiva$ | async) {
+  <div class="min-h-screen bg-slate-100 p-8 font-sans">
+    <app-mapa></app-mapa>
+  </div>
+} 
+<!-- Si NO hay sesión, mostramos el login negro -->
+@else {
+  <app-login></app-login>
+}

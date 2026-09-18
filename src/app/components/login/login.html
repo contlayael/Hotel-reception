@@ -1,0 +1,64 @@
+<div class="min-h-screen bg-slate-900 flex items-center justify-center p-4 font-sans">
+  
+  <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-500">
+    
+    <!-- Encabezado Elegante -->
+    <div class="bg-slate-800 p-8 text-center relative overflow-hidden">
+      <!-- Círculo decorativo -->
+      <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg relative z-10">
+        <span class="text-3xl">🏨</span>
+      </div>
+      <h1 class="text-2xl font-black text-white tracking-wide relative z-10">Marttiny OS</h1>
+      <p class="text-slate-400 text-sm font-medium mt-1 relative z-10">Gestión Hotelera Inteligente</p>
+    </div>
+
+    <!-- Formulario -->
+    <div class="p-8 space-y-6">
+      
+      @if (error) {
+        <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-bold border border-red-200 text-center animate-in shake duration-300">
+          {{ error }}
+        </div>
+      }
+
+      <div>
+        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Usuario</label>
+        <input 
+          type="text" 
+          [(ngModel)]="username"
+          (keyup.enter)="iniciarSesion()"
+          placeholder="Ej: admin_marttiny"
+          class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors text-slate-800 font-semibold"
+        >
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Contraseña</label>
+        <input 
+          type="password" 
+          [(ngModel)]="password"
+          (keyup.enter)="iniciarSesion()"
+          placeholder="••••••••"
+          class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors text-slate-800 font-semibold"
+        >
+      </div>
+
+      <button 
+        (click)="iniciarSesion()"
+        [disabled]="cargando || !username || !password"
+        class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all flex justify-center items-center gap-2">
+        @if (cargando) {
+          <span class="animate-spin text-xl">⏳</span> Verificando...
+        } @else {
+          Ingresar al Sistema ➔
+        }
+      </button>
+    </div>
+    
+    <!-- Footer -->
+    <div class="bg-slate-50 p-4 text-center border-t border-slate-100">
+      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">© 2026 Marttiny Software. All Rights Reserved.</p>
+    </div>
+
+  </div>
+</div>

@@ -1,16 +1,18 @@
+<!-- 1. NUEVO ENCABEZADO CON BOTÓN HAMBURGUESA -->
+<header class="mb-8 flex justify-between items-center bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+  <div class="flex items-center gap-4">
+    <button (click)="menuAbierto = true" class="p-2 hover:bg-slate-100 rounded-lg transition-colors group cursor-pointer">
+      <svg class="w-8 h-8 text-slate-600 group-hover:text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+    <h1 class="text-3xl font-extrabold text-slate-800">🏨 Recepción Hotel</h1>
+  </div>
+  <div class="text-sm text-slate-500 font-medium hidden sm:block">Turno Actual: Recepción</div>
+</header>
+
+<!-- 2. GRID DE HABITACIONES -->
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-  <div class="mb-6 flex justify-end">
-  <button 
-    (click)="mostrarCorte = true"
-    class="bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 px-6 rounded-lg shadow-sm transition-colors flex items-center gap-2">
-    <span>📊</span> Ver Corte de Caja
-  </button>
-  <button 
-    (click)="mostrarEstadisticas = true"
-    class="bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold py-2 px-6 rounded-lg shadow-sm transition-colors flex items-center gap-2 mr-4">
-    <span>📈</span> Estadísticas
-  </button>
-</div>
   @for (hab of habitaciones; track hab.numero) {
     <div
       (click)="manejarClickHabitacion(hab)"
@@ -56,7 +58,6 @@
             ⏱️ {{ hab.tiempoRestante }}
           </div>
           
-          <!-- Alerta de tiempo agotado -->
           @if (hab.tiempoAgotado) {
             <div class="text-xs font-bold text-red-700 uppercase mt-2 animate-bounce">
               ¡TIEMPO AGOTADO!
@@ -70,15 +71,16 @@
   }
 </div>
 
-<!-- MODAL DE CHECK-IN -->
+<!-- ========================================== -->
+<!-- MODALES Y DRAWER                           -->
+<!-- ========================================== -->
+
 <app-modal-checkin
   [habitacion]="habitacionSeleccionada()"
   (alCerrar)="habitacionSeleccionada.set(null)"
-  (alGuardarExitoso)="cargarHabitacionesDesdeBackend()"
->
+  (alGuardarExitoso)="cargarHabitacionesDesdeBackend()">
 </app-modal-checkin>
 
-<!-- MODAL DE GESTIÓN (Usando la sintaxis moderna @if) -->
 @if (mostrarModalGestion) {
   <app-modal-gestion 
     [habitacion]="habitacionSeleccionada()" 
@@ -86,11 +88,67 @@
     (recargar)="manejarRecarga()">
   </app-modal-gestion>
 }
-<!-- MODAL CORTE DE CAJA (Usando la sintaxis moderna @if) -->
+
 @if (mostrarCorte) {
   <app-corte-caja (cerrar)="mostrarCorte = false"></app-corte-caja>
 }
-<!-- MODAL ESTADÍSTICAS (Usando la sintaxis moderna @if) -->
+
 @if (mostrarEstadisticas) {
   <app-estadisticas (cerrar)="mostrarEstadisticas = false"></app-estadisticas>
 }
+
+<!-- ESTE MODAL YA ESTÁ LIBRE DEL MENÚ -->
+@if (mostrarAdminHabitaciones) {
+  <app-gestion-habitaciones 
+    (cerrar)="mostrarAdminHabitaciones = false" 
+    (recargarMapa)="cargarHabitacionesDesdeBackend()">
+  </app-gestion-habitaciones>
+}
+
+<!-- MENÚ LATERAL (DRAWER SUAVE) -->
+@if (menuAbierto) {
+  <!-- Fondo oscuro que se difumina -->
+  <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 transition-opacity animate-in fade-in duration-300" (click)="menuAbierto = false"></div>
+}
+
+<!-- Panel Drawer con deslizamiento fluido -->
+<div class="fixed top-0 left-0 h-full w-80 bg-white shadow-[20px_0_40px_rgba(0,0,0,0.1)] z-50 flex flex-col transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+     [class.-translate-x-full]="!menuAbierto"
+     [class.translate-x-0]="menuAbierto">
+
+  <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-800 text-white">
+    <h2 class="text-lg font-black tracking-wide">MENÚ PRINCIPAL</h2>
+    <button (click)="menuAbierto = false" class="text-slate-400 hover:text-white text-3xl font-light transition-colors cursor-pointer">&times;</button>
+  </div>
+
+  <div class="flex-1 overflow-y-auto py-4">
+    <nav class="space-y-1 px-3">
+      <button (click)="abrirCorte($event)" class="w-full flex items-center gap-3 px-4 py-3 text-left font-bold text-slate-600 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors">
+        <span class="text-xl">📊</span> Corte de Caja
+      </button>
+      
+      <button (click)="abrirEstadisticas($event)" class="w-full flex items-center gap-3 px-4 py-3 text-left font-bold text-slate-600 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors">
+        <span class="text-xl">📈</span> Estadísticas
+      </button>
+
+      <div class="pt-6 mt-4 border-t border-slate-100">
+        <p class="px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Administración</p>
+        
+        <button (click)="abrirAdminHabitaciones($event)" class="w-full flex items-center gap-3 px-4 py-3 text-left font-bold text-slate-600 rounded-lg hover:bg-slate-100 transition-colors">
+          <span class="text-xl">🛏️</span> Inventario Habitaciones
+        </button>
+      </div>
+    </nav>
+    <div class="p-4 mt-auto">
+      <button 
+        (click)="cerrarSesion()" 
+        class="w-full flex justify-center items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 font-bold py-3 rounded-xl transition-colors">
+        🚪 Cerrar Sesión
+      </button>
+    </div>
+  </div>
+  
+  <div class="p-4 border-t border-slate-100 bg-slate-50 text-center">
+    <p class="text-xs font-bold text-slate-400">Marttiny Motel OS v1.0</p>
+  </div>
+</div>
